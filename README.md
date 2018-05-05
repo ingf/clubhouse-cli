@@ -5,9 +5,9 @@ It is meant to just ask a few important questions and create a story, not be a f
 
 ## Usage
 ```bash
-npm install -g chcli --registry http://npm.adrise.tv
+npm install -g chcli
 # may need sudo
-sudo npm install -g chcli --registry http://npm.adrise.tv
+sudo npm install -g chcli
 
 chcli
 ```
