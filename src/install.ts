@@ -4,7 +4,7 @@ import {isNullOrUndefined} from "util";
 import {IConfiguration, saveConfiguration} from "./configuration";
 import {getProjects, IClubhouseState, IProject} from "./clubhouse";
 import ChoiceOption = inquirer.objects.ChoiceOption;
-import * as Chalk from "chalk";
+import Chalk from "chalk";
 import {sys} from "typescript";
 
 

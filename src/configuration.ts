@@ -31,7 +31,8 @@ function makeError(errorMsg: string): IConfiguration {
 export function loadConfiguration(): IConfiguration {
   if (fs.existsSync(cfgFile)) {
     try {
-      const cfg = yaml.safeLoad(fs.readFileSync(cfgFile, 'utf8'))['clubhouse-cli'] as IConfiguration;
+      const obj = yaml.safeLoad(fs.readFileSync(cfgFile, 'utf8')) as any;
+      const cfg = obj['clubhouse-cli'] as IConfiguration;
       if (isUndefined(cfg)) return makeError("Error loading configuration");
       return cfg;
     } catch (e) {

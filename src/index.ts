@@ -4,7 +4,7 @@ import {Answers, Question} from "inquirer";
 import {IConfiguration, loadConfiguration} from "./configuration";
 import {doInstall} from "./install";
 import {createStory, getState, IClubhouseState, IEpic, IProject, ITeam, IStory, ILabel, ICreateLabel} from "./clubhouse";
-import * as Chalk from "chalk";
+import Chalk from "chalk";
 import ChoiceOption = inquirer.objects.ChoiceOption;
 import {isNullOrUndefined} from "util";
 import inquirer = require("inquirer");

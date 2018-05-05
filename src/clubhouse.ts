@@ -218,7 +218,7 @@ export function getSprints(token: string): Promise<ILabel[]> {
 
 export function createStory(token: string, story: IStory): Promise<IStory> {
   const client = require('clubhouse-lib').create(token);
-  const reqObj = pick(story, ['name', 'description', 'story_type', 'epic_id', 'project_id', 'labels']);
+  const reqObj = pick(story, ['name', 'description', 'story_type', 'epic_id', 'project_id', 'labels']) as any;
 
   if (!isNullOrUndefined(story.owner_ids)) {
     reqObj.owner_ids = Array.isArray(story.owner_ids) ? story.owner_ids : [story.owner_ids];
