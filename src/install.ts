@@ -23,7 +23,7 @@ export function doInstall(currentCfg: IConfiguration, chCfg: IClubhouseState): P
     {
       type: "input",
       name: "token",
-      message: "API Token (https://app.clubhouse.io/tubi/settings/account/api-tokens): ",
+      message: "API Token (https://app.clubhouse.io/settings/account/api-tokens): ",
       default: currentCfg.token || process.env.CLUBHOUSE_API_TOKEN,
       validate: (input: string, answers?: Answers) => {
         if (isNullOrUndefined(input) || input.length != 36) return "Token must be 36 characters long";

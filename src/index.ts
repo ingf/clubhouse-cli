@@ -131,7 +131,7 @@ function createSingleTicket(state: IClubhouseState) {
           const storySlug = slug(story.name).toLowerCase();
           const gitCmd = `git checkout -b ${story.story_type}/ch${id}/${storySlug}`;
           console.info(Chalk.green(`Successfully created a story with id ${id}`));
-          console.info("You can view your story at " + link(`https://app.clubhouse.io/tubi/story/${id}`));
+          console.info("You can view your story at " + link(`https://app.clubhouse.io/story/${id}`));
           console.info("To start working on this story (copied to clipboard): " + Chalk.bold(gitCmd));
           writeSync(gitCmd);
           return story;
@@ -170,7 +170,7 @@ function main() {
     console.info("The most important part is an API token.")
     console.info("To get one, login to your clubhouse account " +
       "and visit " +
-      link("https://app.clubhouse.io/tubi/settings/account/api-tokens"));
+      link("https://app.clubhouse.io/settings/account/api-tokens"));
 
     doInstall(config, {loaded: false} as IClubhouseState).then(getState).then(createTickets);
   } else {
