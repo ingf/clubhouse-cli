@@ -1,15 +1,15 @@
 #! /usr/bin/env node
 
-import {Answers, Question} from "inquirer";
-import {IConfiguration, loadConfiguration} from "./configuration";
-import {doInstall} from "./install";
-import {createStory, getState, IClubhouseState, IEpic, IProject, ITeam, IStory, ILabel, ICreateLabel} from "./clubhouse";
+import { Answers, Question } from "inquirer";
+import { IConfiguration, loadConfiguration } from "./configuration";
+import { doInstall } from "./install";
+import { createStory, getState, IClubhouseState, IEpic, IProject, ITeam, IStory, ILabel, ICreateLabel } from "./clubhouse";
 import Chalk from "chalk";
 import ChoiceOption = inquirer.objects.ChoiceOption;
-import {isNullOrUndefined} from "util";
+import { isNullOrUndefined } from "util";
 import inquirer = require("inquirer");
 import slug = require("slug");
-import {writeSync} from "clipboardy";
+import { writeSync } from "clipboardy";
 
 const link = (msg: string) => Chalk.blue(Chalk.underline(msg));
 
@@ -25,32 +25,40 @@ function createSingleTicket(state: IClubhouseState) {
   inquirer.registerPrompt('autocomplete', require('inquirer-autocomplete-prompt'));
   const questions: Question[] = [
     {
-      type: 'list',
+      type: 'autocomplete',
       name: 'project',
       message: 'Which project does this story belong to: ',
-      choices: state
-        .projects
-        .sort((p1: IProject, p2: IProject) => p1.team_id - p2.team_id)
-        .map((project: IProject) => {
-          return {
-            name: `${project.name} (${state.teams.find((team: ITeam) => team.id === project.team_id).name})`,
-            value: project.id.toString(),
-          } as ChoiceOption;
-        }),
+      source: (answersSoFar: Answers[], input: string) => {
+        const projects: ChoiceOption[] = state
+          .projects
+          .sort((p1: IProject, p2: IProject) => p1.team_id - p2.team_id)
+          .map((project: IProject) => {
+            return {
+              name: `${project.name} (${state.teams.find((team: ITeam) => team.id === project.team_id).name})`,
+              value: project.id.toString(),
+            } as ChoiceOption;
+          });
+
+        return getAutoCompleteChoices(input, projects);
+      },
       default: state.projects.findIndex(project => project.id == state.configuration.defaultProjectId),
       validate: (input: string, answers?: Answers) => {
         if (isNullOrUndefined(input)) return "A story must be assigned to a project";
         return true;
       },
     }, {
-      type: 'list',
+      type: 'autocomplete',
       name: 'epic',
       message: 'Which epic to assign this story to: ',
       default: state.epics.length,
-      choices: state
-        .epics
-        .map((epic: IEpic) => ({name: epic.name, value: epic.id.toString()} as ChoiceOption))
-        .concat([{name: "No Epic", value: null} as ChoiceOption]),
+      source: (answersSoFar: Answers[], input: string) => {
+        const epics: ChoiceOption[] = state
+          .epics
+          .map((epic: IEpic) => ({ name: epic.name, value: epic.id.toString() } as ChoiceOption))
+          .concat([{ name: "No Epic", value: null } as ChoiceOption]);
+
+        return getAutoCompleteChoices(input, epics);
+      },
     },
     {
       type: 'input',
@@ -85,33 +93,30 @@ function createSingleTicket(state: IClubhouseState) {
       source: (answersSoFar: Answers[], input: string) => {
         const users: ChoiceOption[] = state
           .users
-          .map(user => ({name: user.profile.name, value: user.id} as ChoiceOption))
+          .map(user => ({ name: user.profile.name, value: user.id } as ChoiceOption));
 
-        users.unshift({name: "Do not assign", value: null} as ChoiceOption);
+        users.unshift({ name: "Do not assign", value: null } as ChoiceOption);
 
-        if (isNullOrUndefined(input)) {
-          return Promise.resolve(users);
-        } else {
-          const filtered = users
-            .filter((user: ChoiceOption) => user.name.toLowerCase().includes(input.toLowerCase()));
-          return Promise.resolve(filtered);
-        }
+        return getAutoCompleteChoices(input, users);
       },
     },
     {
-      type: 'list',
+      type: 'autocomplete',
       name: 'labels',
       message: 'Which sprint to put this story in: ',
       default: state.sprints.length,
-      choices: state
+      source: (answersSoFar: Answers[], input: string) => {
+        const labels: ChoiceOption[] = state
           .sprints
           .map((label: ILabel) => ({
             name: label.name,
             value: {
-              name: label.name
-            }
+              name: label.name,
+            },
           } as ILabelChoice))
-          .concat([{name: "No Label", value: null} as ILabelChoice]),
+          .concat([{ name: "No Label", value: null } as ILabelChoice]);
+        return getAutoCompleteChoices(input, labels);
+      },
     }] as Question[];
 
   return inquirer
@@ -162,6 +167,16 @@ function createTickets(state: IClubhouseState, idx: number = 1) {
     });
 }
 
+function getAutoCompleteChoices(input: string, data: ChoiceOption[]) {
+  if (isNullOrUndefined(input)) {
+    return Promise.resolve(data);
+  } else {
+    const filtered = data
+      .filter((item: ChoiceOption) => item.name.toLowerCase().includes(input.toLowerCase()));
+    return Promise.resolve(filtered);
+  }
+}
+
 function main() {
   const config: IConfiguration = loadConfiguration();
   if (!config.loaded) {
@@ -172,7 +187,7 @@ function main() {
       "and visit " +
       link("https://app.clubhouse.io/settings/account/api-tokens"));
 
-    doInstall(config, {loaded: false} as IClubhouseState).then(getState).then(createTickets);
+    doInstall(config, { loaded: false } as IClubhouseState).then(getState).then(createTickets);
   } else {
     getState(config).then(createTickets);
   }
