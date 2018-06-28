@@ -1,7 +1,7 @@
 import got = require("got");
-import {IConfiguration} from "./configuration";
-import {isNullOrUndefined} from "util";
-import {pick} from "lodash";
+import { IConfiguration } from "./configuration";
+import { isNullOrUndefined } from "util";
+import { pick } from "lodash";
 
 const API_BASE_URL = "https://api.clubhouse.io/api/v2";
 const SPRINT_REGEX = new RegExp('sprint ending*', 'i');
@@ -177,43 +177,43 @@ export interface ITeam {
 }
 
 export function getProjects(token: string): Promise<IProject[]> {
-  return got(`${API_BASE_URL}/projects`, {json: true, query: {token}})
+  return got(`${API_BASE_URL}/projects`, { json: true, query: { token } })
     .then(response => response.body as IProject[])
     .then(projects => projects.filter(project => !project.archived));
 }
 
 export function getEpics(token: string): Promise<IEpic[]> {
-  return got(`${API_BASE_URL}/epics`, {json: true, query: {token}})
+  return got(`${API_BASE_URL}/epics`, { json: true, query: { token } })
     .then(response => response.body as IEpic[])
     .then(epics => epics.filter(epic => !epic.archived));
 }
 
 export function getUsers(token: string): Promise<IMember[]> {
-  return got(`${API_BASE_URL}/members`, {json: true, query: {token}})
+  return got(`${API_BASE_URL}/members`, { json: true, query: { token } })
     .then(response => response.body as IMember[]);
 }
 
 export function getTeams(token: string): Promise<ITeam[]> {
-  return got(`${API_BASE_URL}/teams`, {json: true, query: {token}})
+  return got(`${API_BASE_URL}/teams`, { json: true, query: { token } })
     .then(response => response.body as ITeam[]);
 }
 
 export function getSprints(token: string): Promise<ILabel[]> {
   // We use labels to indicate sprints in clubhouse.
   // So get all the labels and filter the ones that match our sprint naming convention.
-  return got(`${API_BASE_URL}/labels`, {json: true, query: {token}})
-      .then(response => {
-        const sprints: ILabel[] = [];
-        if (Array.isArray(response.body)) {
-          response.body.map(label => {
-            if (label.name && label.name.match(SPRINT_REGEX)) {
-              sprints.push(label);
-            }
-          });
-        }
+  return got(`${API_BASE_URL}/labels`, { json: true, query: { token } })
+    .then(response => {
+      const sprints: ILabel[] = [];
+      if (Array.isArray(response.body)) {
+        response.body.map(label => {
+          if (label.name && label.name.match(SPRINT_REGEX)) {
+            sprints.push(label);
+          }
+        });
+      }
 
-        return sprints;
-      });
+      return sprints;
+    });
 }
 
 export function createStory(token: string, story: IStory): Promise<IStory> {

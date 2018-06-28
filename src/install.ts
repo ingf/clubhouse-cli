@@ -1,12 +1,11 @@
 import inquirer = require("inquirer");
-import {Answers, ChoiceType, Question} from "inquirer";
-import {isNullOrUndefined} from "util";
-import {IConfiguration, saveConfiguration} from "./configuration";
-import {getProjects, IClubhouseState, IProject} from "./clubhouse";
+import { Answers, ChoiceType, Question } from "inquirer";
+import { isNullOrUndefined } from "util";
+import { IConfiguration, saveConfiguration } from "./configuration";
+import { getProjects, IClubhouseState, IProject } from "./clubhouse";
 import ChoiceOption = inquirer.objects.ChoiceOption;
 import Chalk from "chalk";
-import {sys} from "typescript";
-
+import { sys } from "typescript";
 
 function makeProjectChoices(projects: IProject[]): ChoiceOption[] {
   return projects
@@ -37,7 +36,7 @@ export function doInstall(currentCfg: IConfiguration, chCfg: IClubhouseState): P
       choices: (answers: Answers) => {
         return getProjects(answers.token)
           .then(projects => makeProjectChoices(projects)
-            .concat([{name: "No Default", value: "-1"}]))
+            .concat([{ name: "No Default", value: "-1" }]))
           .catch(ex => {
             console.error(Chalk.red("Unable to get list of projects. Are you sure the API key is correct?"));
             console.error(Chalk.bold("Error is: ") + ex.message);

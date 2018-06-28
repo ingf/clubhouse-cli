@@ -3,9 +3,9 @@ import * as os from "os";
 import * as path from "path";
 import * as yaml from 'js-yaml';
 import * as inquirer from "inquirer";
-import {Answers} from "inquirer";
-import {DumpOptions} from "js-yaml";
-import {isUndefined} from "util";
+import { Answers } from "inquirer";
+import { DumpOptions } from "js-yaml";
+import { isUndefined } from "util";
 
 const cfgFile = path.resolve(os.homedir(), '.chcli', 'config');
 
@@ -45,10 +45,10 @@ export function loadConfiguration(): IConfiguration {
 
 function doFileSave(fileName: string, config: IConfiguration): void {
   try {
-    const configYml = yaml.safeDump({"clubhouse-cli": config});
+    const configYml = yaml.safeDump({ "clubhouse-cli": config });
     const dir = path.dirname(cfgFile);
     if (!fs.existsSync(dir)) fs.mkdirSync(dir);
-    fs.writeFileSync(fileName, configYml, {flag: 'w'});
+    fs.writeFileSync(fileName, configYml, { flag: 'w' });
   } catch (e) {
     console.error(e.message);
   }

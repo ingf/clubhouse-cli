@@ -54,8 +54,7 @@ function createSingleTicket(state: IClubhouseState) {
       source: (answersSoFar: Answers[], input: string) => {
         const epics: ChoiceOption[] = state
           .epics
-          .map((epic: IEpic) => ({ name: epic.name, value: epic.id.toString() } as ChoiceOption))
-          .concat([{ name: "No Epic", value: null } as ChoiceOption]);
+          .map((epic: IEpic) => ({ name: epic.name, value: epic.id.toString() } as ChoiceOption));
 
         return getAutoCompleteChoices(input, epics);
       },
